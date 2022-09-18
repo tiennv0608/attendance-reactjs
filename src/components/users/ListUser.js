@@ -3,9 +3,19 @@ import axios from "axios";
 
 class ListUser extends React.Component {
   async componentDidMount() {
-    await axios.get("http://localhost:8081/users").then((res) => {
-      console.log(res);
-    });
+    let authorization = "Bearer " + localStorage.getItem("token");
+    console.log(">>Check bearer token: ", authorization);
+    await axios
+      .get("http://localhost:8081/users", {
+        headers: {
+          Authorization: authorization.replace,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      });
   }
 
   render() {
