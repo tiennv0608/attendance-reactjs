@@ -1,53 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-class LoginPage extends React.Component {
-  state = {
-    username: "",
-    password: "",
-  };
+const LoginPage = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  handleOnChangeUsername = (e) => {
-    this.setState({
-      username: e.target.value,
-    });
-  };
+  const navigate = useNavigate();
 
-  handleOnChangePassword = (e) => {
-    this.setState({
-      password: e.target.value,
-    });
-  };
-
-  handleLogin = async () => {
-    let data = this.state;
+  const handleLogin = async () => {
+    let data = {
+      username: username,
+      password: password,
+    };
 
     await axios
       .post("http://localhost:8081/login", data)
       .then((res) => {
         localStorage.setItem("token", res.data.object.token);
+        localStorage.setItem("authority", res.data.object.roles[0].authority);
+        console.log(">>>check login: ", res.data.object);
+        setTimeout(() => {
+          navigate("/users");
+        }, 3000);
       })
       .catch((error) => {
-        console.log(error);
+        alert("Sai tài khoản hoặc mật khẩu rồi bạn êii!");
+        navigate("/");
       });
-    // await axios
-    //   .get("http://localhost:8081/users", {
-    //     headers: { Authorization: `Bearer ${this.state.token}` },
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
 
-  render() {
-    return (
-      <>
-        <div>
-          <h2>Login</h2>
-        </div>
+  return (
+    <>
+      <div>
+        <h2>Login</h2>
+      </div>
+      <form>
         <div>
           <table>
             <tbody>
@@ -60,7 +48,9 @@ class LoginPage extends React.Component {
                   <input
                     type="text"
                     id="username"
-                    onChange={(e) => this.handleOnChangeUsername(e)}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                    }}
                   />
                 </td>
               </tr>
@@ -73,14 +63,16 @@ class LoginPage extends React.Component {
                   <input
                     type="password"
                     id="password"
-                    onChange={(e) => this.handleOnChangePassword(e)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
                   />
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                  <button type="button" onClick={() => this.handleLogin()}>
+                  <button type="button" onClick={() => handleLogin()}>
                     Login
                   </button>
                 </td>
@@ -88,9 +80,9 @@ class LoginPage extends React.Component {
             </tbody>
           </table>
         </div>
-      </>
-    );
-  }
-}
+      </form>
+    </>
+  );
+};
 
 export default LoginPage;

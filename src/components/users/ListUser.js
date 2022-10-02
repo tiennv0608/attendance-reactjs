@@ -1,40 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import useCheckRole from "../hooks/useCheckRole";
+import { useNavigate } from "react-router-dom";
 
-class ListUser extends React.Component {
-  state = {
-    users: [],
-  };
+const ListUser = () => {
+  const [users, setUsers] = useState([]);
 
-  async componentDidMount() {
-    let authorization = "Bearer " + localStorage.getItem("token");
-    await axios
-      .get("http://localhost:8081/users", {
-        headers: { Authorization: authorization },
-      })
-      .then((res) => {
-        this.setState({
-          users: res.data.object,
+  const navigate = useNavigate();
+
+  const { isAdmin, isTeacher, isStudent } = useCheckRole(
+    localStorage.getItem("authority")
+  );
+
+  useEffect(() => {
+    if (!isAdmin) {
+      alert("You don't have permission");
+      navigate("/");
+    } else {
+      let authorization = "Bearer " + localStorage.getItem("token");
+      axios
+        .get("http://localhost:8081/users", {
+          headers: { Authorization: authorization },
+        })
+        .then((res) => {
+          setUsers(res.data.object);
         });
-      });
-  }
+    }
+  }, []);
 
-  render() {
-    const { users } = this.state;
-    console.log(users);
-
-    return (
-      users &&
-      users.length &&
-      users.map((item, index) => {
-        return (
-          <div key={item.id}>
-            {index + 1} - {item.username}
-          </div>
-        );
-      })
-    );
-  }
-}
+  return (
+    users &&
+    users.length &&
+    users.map((item, index) => {
+      return (
+        <div key={item.id}>
+          {index + 1} - {item.username}
+        </div>
+      );
+    })
+  );
+};
 
 export default ListUser;
