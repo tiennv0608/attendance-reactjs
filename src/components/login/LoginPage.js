@@ -8,20 +8,28 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     let data = {
       username: username,
       password: password,
     };
 
-    await axios
+    axios
       .post("http://localhost:8081/login", data)
       .then((res) => {
         localStorage.setItem("token", res.data.object.token);
         localStorage.setItem("authority", res.data.object.roles[0].authority);
         console.log(">>>check login: ", res.data.object);
+        let path = "";
+        if (res.data.object.roles[0].authority === "ADMIN") {
+          path = "/accounts";
+        } else if (res.data.object.roles[0].authority === "TEACHER") {
+          path = "/teachers";
+        } else if (res.data.object.roles[0].authority === "STUDENT") {
+          path = "/students";
+        }
         setTimeout(() => {
-          navigate("/users");
+          navigate(path);
         }, 3000);
       })
       .catch((error) => {
@@ -35,7 +43,12 @@ const LoginPage = () => {
       <div>
         <h2>Login</h2>
       </div>
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
+      >
         <div>
           <table>
             <tbody>
@@ -72,9 +85,7 @@ const LoginPage = () => {
               <tr>
                 <td></td>
                 <td>
-                  <button type="button" onClick={() => handleLogin()}>
-                    Login
-                  </button>
+                  <button type="submit">Login</button>
                 </td>
               </tr>
             </tbody>

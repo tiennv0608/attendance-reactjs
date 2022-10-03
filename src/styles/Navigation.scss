@@ -18,4 +18,17 @@
       color: white;
     }
   }
+  .btn-logout {
+    height: 55px;
+    float: right;
+    background-color: #333;
+    color: #f2f2f2;
+    border: none;
+    padding: 14px 16px;
+
+    &:hover {
+      background-color: #ddd;
+      color: black;
+    }
+  }
 }
