@@ -1,10 +1,9 @@
 import "./App.scss";
-// import Header from "../components/layout/Header";
 import Navigation from "../components/layout/Navigation";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import ListUser from "../components/users/ListUser";
 import LoginPage from "../components/login/LoginPage";
 import ListUser from "../components/users/ListUser";
+import Header from "../components/layout/Header";
 
 function App() {
   return (
@@ -12,6 +11,7 @@ function App() {
       <div className="App">
         <Navigation />
         <Routes>
+          <Route path="/" element={<Header />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/accounts" element={<ListUser />} />
         </Routes>

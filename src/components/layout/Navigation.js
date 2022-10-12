@@ -4,24 +4,29 @@ import { NavLink, useNavigate } from "react-router-dom";
 import useCheckRole from "../hooks/useCheckRole";
 
 const Navigation = () => {
-  const { isAdmin, isTeacher, isStudent } = useCheckRole(
-    localStorage.getItem("authority")
-  );
+  const roles = useCheckRole(localStorage.getItem("authority"));
 
-  const [isLogin, setIsLogin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isTeacher, setIsTeacher] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAdmin || isTeacher || isStudent) {
-      setIsLogin(true);
-    }
-  }, [isLogin]);
+    console.log(">>>check roles ", roles);
+    if (roles.isAdmin) setIsAdmin(true);
+    if (roles.isTeacher) setIsTeacher(true);
+    if (roles.isStudent) setIsStudent(true);
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("authority");
     navigate("/");
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -34,12 +39,14 @@ const Navigation = () => {
       {isAdmin ? <NavLink to="/accounts">Account</NavLink> : null}
       {isTeacher ? <NavLink to="/teachers">Teacher</NavLink> : null}
       {isStudent ? <NavLink to="/students">Student</NavLink> : null}
-      {isLogin ? (
-        <button className="btn-logout" onClick={() => handleLogout()}>
+      {isAdmin || isTeacher || isStudent ? (
+        <button className="btn btn-logout" onClick={() => handleLogout()}>
           Logout
         </button>
       ) : (
-        <NavLink to="/login">Login</NavLink>
+        <button className="btn btn-login" onClick={() => handleLogin()}>
+          Login
+        </button>
       )}
     </div>
   );

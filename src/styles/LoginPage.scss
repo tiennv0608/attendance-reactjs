@@ -1,0 +1,20 @@
+.container {
+  .title {
+    text-align: center;
+    padding: 15px;
+  }
+
+  form {
+    border: none;
+    .form-login {
+      display: inline-block;
+      text-align: center;
+      label[class="form-control"] {
+        border: none;
+      }
+      input[class="form-control"] {
+        min-width: 300px;
+      }
+    }
+  }
+}

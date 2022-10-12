@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../../styles/LoginPage.scss";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -39,8 +40,8 @@ const LoginPage = () => {
   };
 
   return (
-    <>
-      <div>
+    <div className="container">
+      <div className="title">
         <h2>Login</h2>
       </div>
       <form
@@ -49,16 +50,18 @@ const LoginPage = () => {
           handleLogin();
         }}
       >
-        <div>
+        <div className="form-login">
           <table>
             <tbody>
               <tr>
                 <td>
-                  <label htmlFor="username">Username</label>
+                  <label className="form-control" htmlFor="username">
+                    Username
+                  </label>
                 </td>
                 <td>
-                  <span>:</span>
                   <input
+                    className="form-control"
                     type="text"
                     id="username"
                     onChange={(e) => {
@@ -69,11 +72,13 @@ const LoginPage = () => {
               </tr>
               <tr>
                 <td>
-                  <label htmlFor="password">Password</label>
+                  <label className="form-control" htmlFor="password">
+                    Password
+                  </label>
                 </td>
                 <td>
-                  <span>:</span>
                   <input
+                    className="form-control"
                     type="password"
                     id="password"
                     onChange={(e) => {
@@ -85,14 +90,16 @@ const LoginPage = () => {
               <tr>
                 <td></td>
                 <td>
-                  <button type="submit">Login</button>
+                  <button className="btn btn-outline-info" type="submit">
+                    Login
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </form>
-    </>
+    </div>
   );
 };
 

@@ -18,17 +18,26 @@
       color: white;
     }
   }
-  .btn-logout {
+  .btn {
     height: 55px;
     float: right;
     background-color: #333;
     color: #f2f2f2;
     border: none;
+    border-radius: 0px;
     padding: 14px 16px;
 
-    &:hover {
-      background-color: #ddd;
-      color: black;
+    &.btn-logout {
+      &:hover {
+        background-color: #ddd;
+        color: black;
+      }
+    }
+    &.btn-login {
+      &:hover {
+        background-color: #ddd;
+        color: black;
+      }
     }
   }
 }
