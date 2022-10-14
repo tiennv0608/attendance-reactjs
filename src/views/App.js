@@ -4,13 +4,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "../components/login/LoginPage";
 import ListUser from "../components/users/ListUser";
 import Header from "../components/layout/Header";
-import { useContext } from "react";
-import { StoreContext } from "./store";
+import { useStore } from "../store";
 
 function App() {
-  const [state, dispatch] = useContext(StoreContext);
+  const [state, dispatch] = useStore();
 
-  console.log(state);
+  const { isLogin } = state;
+
   return (
     <Router>
       <div className="App">
