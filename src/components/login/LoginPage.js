@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../styles/LoginPage.scss";
+import { actions, useStore } from "../../store";
 
 const LoginPage = () => {
+  const [state, dispatch] = useStore();
+
+  console.log(">>> check state Login page: ", state);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -24,13 +29,17 @@ const LoginPage = () => {
         let path = "";
         if (res.data.object.roles[0].authority === "ADMIN") {
           path = "/accounts";
+          dispatch(actions.setIsAdmin(true));
         } else if (res.data.object.roles[0].authority === "TEACHER") {
           path = "/teachers";
+          dispatch(actions.setIsTeacher(true));
         } else if (res.data.object.roles[0].authority === "STUDENT") {
           path = "/students";
+          dispatch(actions.setIsStudent(true));
         }
         setTimeout(() => {
           navigate(path);
+          dispatch(actions.setIsLogin(true));
         }, 3000);
       })
       .catch((error) => {
