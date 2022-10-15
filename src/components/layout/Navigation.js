@@ -28,11 +28,13 @@ const Navigation = () => {
       <NavLink end to="/">
         Home
       </NavLink>
-      <NavLink to="/todo">Todos</NavLink>
-      <NavLink to="/about">About</NavLink>
+      <NavLink to="/classes">Classes</NavLink>
       {isAdmin ? <NavLink to="/accounts">Account</NavLink> : null}
-      {isTeacher ? <NavLink to="/teachers">Teacher</NavLink> : null}
-      {isStudent ? <NavLink to="/students">Student</NavLink> : null}
+      {isTeacher || isAdmin ? <NavLink to="/teachers">Teacher</NavLink> : null}
+      {isStudent || isTeacher || isAdmin ? (
+        <NavLink to="/students">Student</NavLink>
+      ) : null}
+      <NavLink to="/about">About</NavLink>
       {isLogin ? (
         <button className="btn btn-logout" onClick={() => handleLogout()}>
           Logout

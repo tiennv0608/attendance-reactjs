@@ -6,10 +6,10 @@ import {
 } from "./constants";
 
 const initState = {
-  isLogin: false,
-  isAdmin: false,
-  isTeacher: false,
-  isStudent: false,
+  isLogin: localStorage.getItem("authority") !== null,
+  isAdmin: localStorage.getItem("authority") === "ADMIN",
+  isTeacher: localStorage.getItem("authority") === "TEACHER",
+  isStudent: localStorage.getItem("authority") === "STUDENT",
 };
 
 const reducer = (state, action) => {
