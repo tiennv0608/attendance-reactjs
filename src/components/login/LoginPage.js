@@ -7,8 +7,6 @@ import { actions, useStore } from "../../store";
 const LoginPage = () => {
   const [state, dispatch] = useStore();
 
-  console.log(">>> check state Login page: ", state);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -23,23 +21,23 @@ const LoginPage = () => {
     axios
       .post("http://localhost:8081/login", data)
       .then((res) => {
+        let authority = res.data.object.roles[0].authority;
         localStorage.setItem("token", res.data.object.token);
-        localStorage.setItem("authority", res.data.object.roles[0].authority);
-        console.log(">>>check login: ", res.data.object);
+        localStorage.setItem("authority", authority);
         let path = "";
-        if (res.data.object.roles[0].authority === "ADMIN") {
-          path = "/accounts";
-          dispatch(actions.setIsAdmin(true));
-        } else if (res.data.object.roles[0].authority === "TEACHER") {
-          path = "/teachers";
-          dispatch(actions.setIsTeacher(true));
-        } else if (res.data.object.roles[0].authority === "STUDENT") {
-          path = "/students";
-          dispatch(actions.setIsStudent(true));
-        }
         setTimeout(() => {
-          navigate(path);
           dispatch(actions.setIsLogin(true));
+          if (authority === "ADMIN") {
+            path = "/accounts";
+            dispatch(actions.setIsAdmin(true));
+          } else if (authority === "TEACHER") {
+            path = "/teachers";
+            dispatch(actions.setIsTeacher(true));
+          } else if (authority === "STUDENT") {
+            path = "/students";
+            dispatch(actions.setIsStudent(true));
+          }
+          navigate(path);
         }, 3000);
       })
       .catch((error) => {

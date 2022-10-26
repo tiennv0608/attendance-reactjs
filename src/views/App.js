@@ -5,6 +5,7 @@ import LoginPage from "../components/login/LoginPage";
 import ListUser from "../components/users/ListUser";
 import Header from "../components/layout/Header";
 import ListClasses from "../components/classes/ListClasses";
+import ListTeachers from "../components/teachers/ListTeachers";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/accounts" element={<ListUser />} />
           <Route path="/classes" element={<ListClasses />} />
+          <Route path="/teachers" element={<ListTeachers />} />
         </Routes>
       </div>
     </Router>
