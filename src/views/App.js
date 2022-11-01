@@ -17,7 +17,9 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/accounts" element={<ListUser />} />
           <Route path="/classes" element={<ListClasses />} />
-          <Route path="/teachers" element={<ListTeachers />} />
+          <Route path="/teachers" element={<ListTeachers />}>
+            {/* <Route path="/view/:id" element={<ListTeachers />} /> */}
+          </Route>
         </Routes>
       </div>
     </Router>
