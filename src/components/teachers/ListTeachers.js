@@ -30,13 +30,14 @@ const ListTeachers = () => {
   });
 
   const [pageNo, setPageNo] = useState(0);
+  const [recordsPerPage] = useState(5);
 
   const navigate = useNavigate();
   const authorization = "Bearer " + localStorage.getItem("token");
 
-  const loadListTeacher = async () => {
+  const loadListTeacherPaging = async () => {
     await axios
-      .get(`${url}/paging?pageNo=${pageNo}&pageSize=5`, {
+      .get(`${url}/paging?pageNo=${pageNo}&pageSize=${recordsPerPage}`, {
         headers: { Authorization: authorization },
       })
       .then((res) => {
@@ -49,13 +50,20 @@ const ListTeachers = () => {
         navigate("/login");
       });
   };
-  useEffect(() => {
+
+  const setListTeachers = () => {
     axios
       .get(url, { headers: { Authorization: authorization } })
       .then((res) => {
         setList(res.data.object);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    loadListTeacher();
+  };
+  useEffect(() => {
+    setListTeachers();
+    loadListTeacherPaging();
   }, [isLoading, pageNo]);
 
   const handleOnChange = (e, field) => {
@@ -95,7 +103,8 @@ const ListTeachers = () => {
         document.querySelector(".btn-close").click();
       })
       .then(() => {
-        loadListTeacher();
+        setListTeachers();
+        loadListTeacherPaging();
       })
       .catch((err) => {
         console.log(err);
@@ -128,7 +137,31 @@ const ListTeachers = () => {
       });
   };
 
-  const handleDelete = () => {};
+  const handleDelete = (id) => {
+    axios
+      .get(`${url}/${id}`, {
+        headers: { Authorization: authorization },
+      })
+      .then((res) => {
+        setTeacher(res.data.object);
+      });
+  };
+
+  const deleteTeacher = async (id) => {
+    await axios
+      .delete(`${url}/${id}`, {
+        headers: {
+          Authorization: authorization,
+        },
+      })
+      .then((res) => {
+        if (pageNo === list.length / recordsPerPage) {
+          setPageNo(pageNo - 1);
+        }
+        setListTeachers();
+        loadListTeacherPaging();
+      });
+  };
 
   const handleEdit = (id) => {
     axios
@@ -173,7 +206,8 @@ const ListTeachers = () => {
         document.querySelector(".btn-close").click();
       })
       .then(() => {
-        loadListTeacher();
+        setListTeachers();
+        loadListTeacherPaging();
       })
       .catch((err) => {
         console.log(err);
@@ -182,14 +216,26 @@ const ListTeachers = () => {
 
   const handleChangePage = (param) => {
     if (param === "next") {
-      if (pageNo + 1 > list.length / 5) {
-        setPageNo(0);
+      if (list.length % recordsPerPage === 0) {
+        if (pageNo + 1 < Math.floor(list.length / recordsPerPage)) {
+          setPageNo(pageNo + 1);
+        } else {
+          setPageNo(0);
+        }
       } else {
-        setPageNo(pageNo + 1);
+        if (pageNo + 1 <= Math.floor(list.length / recordsPerPage)) {
+          setPageNo(pageNo + 1);
+        } else {
+          setPageNo(0);
+        }
       }
     } else if (param === "prev") {
-      if (pageNo - 1 < 0) {
-        setPageNo(Math.floor(list.length / 5));
+      if (pageNo <= 0) {
+        if (list.length % recordsPerPage === 0) {
+          setPageNo(Math.floor(list.length / recordsPerPage) - 1);
+        } else {
+          setPageNo(Math.floor(list.length / recordsPerPage));
+        }
       } else {
         setPageNo(pageNo - 1);
       }
@@ -245,6 +291,8 @@ const ListTeachers = () => {
                         </button>
                         <button
                           className="btn btn-danger m-1"
+                          data-bs-target="#modalDelete"
+                          data-bs-toggle="modal"
                           onClick={() => handleDelete(id)}
                         >
                           Delete
@@ -264,10 +312,16 @@ const ListTeachers = () => {
             </tbody>
           </table>
           <div className="m-2">
-            <button className="m-2" onClick={() => handleChangePage("prev")}>
+            <button
+              className="btn btn-outline-success m-2"
+              onClick={() => handleChangePage("prev")}
+            >
               Prev
             </button>
-            <button className="m-2" onClick={() => handleChangePage("next")}>
+            <button
+              className="btn btn-outline-success m-2"
+              onClick={() => handleChangePage("next")}
+            >
               Next
             </button>
           </div>
@@ -384,6 +438,51 @@ const ListTeachers = () => {
                     </button>
                   </div>
                 ) : null}
+              </div>
+            </div>
+          </div>
+          <div
+            className="modal fade"
+            id="modalDelete"
+            tabIndex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h1 className="modal-title fs-5" id="modalDeleteLabel">
+                    Delete teacher
+                  </h1>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  Do you want to delete {teacher.lastName}?
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    No
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={() => {
+                      deleteTeacher(teacher.id);
+                    }}
+                  >
+                    Yes
+                  </button>
+                </div>
               </div>
             </div>
           </div>
